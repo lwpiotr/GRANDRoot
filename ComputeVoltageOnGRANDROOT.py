@@ -70,7 +70,8 @@ def ComputeVoltageOnROOT(inputfilename,RunID=0,outfilename="N/A"):
         print(type(Zenith),type(Azimuth),Zenith,Azimuth)
 
         #imEfield.GetEntry(idx)    #TODO: how to guarantee that SimEfield and SimShower are synchronized (meaning that the same idx represents the same event) # LWP: We create index over run,event. Then we either make simshower a friend of simeefield (or vice versa), GetEntry() on one of them and use branches of the other through the first one, or call GetEntryWithIndex(run,event) or something similar.
-        nantennas=SimEfield.Detectors_det_id.size()
+        # nantennas=SimEfield.Detectors_det_id.size()
+        nantennas=SimEfield.det_id.size()
 
         logging.info("Found "+str(nantennas)+" antennas")        
 
@@ -88,22 +89,28 @@ def ComputeVoltageOnROOT(inputfilename,RunID=0,outfilename="N/A"):
         for i in range(0,int(nantennas)):
             
 
-            DetectorID=SimEfield.Detectors_det_id[i] 
+            # DetectorID=SimEfield.Detectors_det_id[i]
+            DetectorID=SimEfield.det_id[i]
 
             logging.info("computing voltage for antenna "+str(DetectorID)+" ("+str(i+1)+"/"+str(nantennas)+")")
 
-            position=SimEfield.Detectors_det_pos_shc[i]
+            # position=SimEfield.Detectors_det_pos_shc[i]
+            position=SimEfield.det_pos_shc[i]
             #logging.debug("at position"+str(position))
             
             
-            efieldx=np.array(SimEfield.Detectors_trace_x[i])
-            efieldy=np.array(SimEfield.Detectors_trace_y[i])
-            efieldz=np.array(SimEfield.Detectors_trace_z[i])
-                        
+            # efieldx=np.array(SimEfield.Detectors_trace_x[i])
+            # efieldy=np.array(SimEfield.Detectors_trace_y[i])
+            # efieldz=np.array(SimEfield.Detectors_trace_z[i])
+            efieldx=np.array(SimEfield.trace_x[i])
+            efieldy=np.array(SimEfield.trace_y[i])
+            efieldz=np.array(SimEfield.trace_z[i])
+
             efield=np.column_stack((efieldx,efieldy,efieldz))
                         
-            t0=SimEfield.Detectors_t_0[i]
-              
+            # t0=SimEfield.Detectors_t_0[i]
+            t0=SimEfield.t_0[i]
+
             time=np.arange(tpre+t0,tpost+t0+10*tbinsize,tbinsize,)
             time=time[0:np.shape(efield)[0]]   
 

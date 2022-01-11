@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# An example of storing traces to a
+# An example of storing traces to a file
 import numpy as np
 from GRANDRootTrees import *
 import ROOT
@@ -72,6 +72,9 @@ for ev in range(event_count):
 # tadccounts.Print()
 # tadccounts.tree.Scan("*")
 
+# Build the tree index
+tadccounts.BuildIndex("run_id", "evt_id")
+
 # Write the tree to the storage
 tadccounts.Write()
 
@@ -106,7 +109,7 @@ for ev in range(event_count):
         traces_lengths.append(len(trace[0]))
         start_times.append(ev*10)
         rel_peak_times.append(ev*11)
-        det_times.append(ev*13)
+        det_times.append(ev*13.2)
         e_det_times.append(ev*14)
         isTriggereds.append(True)
         sampling_speeds.append(ev*15)
@@ -133,6 +136,12 @@ for ev in range(event_count):
 # tvoltage.Print()
 # tvoltage.tree.Scan("*")
 
+# Build the tree index
+tvoltage.BuildIndex("run_id", "evt_id")
+
+# Add friends
+tvoltage.AddFriend(tadccounts.tree)
+
 # Write the tree to the storage
 tvoltage.Write()
 
@@ -148,8 +157,8 @@ v2ef = 1.17
 # Create the ADC counts tree
 tefield = GRANDEfieldTree()
 
-# Fill the tree with the generated events
-for ev in range(event_count):
+# Fill the tree with every second of generated events - dumb selection
+for ev in range(0,event_count,2):
     tefield.evt_id = ev
     # Loop through the event's traces
     traces_lengths = []
@@ -176,7 +185,7 @@ for ev in range(event_count):
         traces_lengths.append(len(trace[0]))
         start_times.append(ev*10)
         rel_peak_times.append(ev*11)
-        det_times.append(ev*13)
+        det_times.append(ev*13.5)
         e_det_times.append(ev*14)
         isTriggereds.append(True)
         sampling_speeds.append(ev*15)
@@ -225,12 +234,18 @@ for ev in range(event_count):
 # tefield.Print()
 # tefield.tree.Scan("*")
 
+# Build the tree index
+tefield.BuildIndex("run_id", "evt_id")
+
+# Add friends
+tefield.AddFriend(tadccounts.tree)
+tefield.AddFriend(tvoltage.tree)
+
 # Write the tree to the storage
 tefield.Write()
 
-
-
 tree_file.Close()
+exit()
 
 # Create the ADC counts tree
 tadccounts = GRANDADCCountsTree()

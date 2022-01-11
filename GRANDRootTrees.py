@@ -2,13 +2,18 @@
 
 import ROOT
 import numpy as np
-import collections
+import sys
+# This import changes in Python 3.10
+if sys.version_info.major>=3 and sys.version_info.minor<10:
+	from collections import MutableSequence
+else:
+	from collections.abc import MutableSequence
 from dataclasses import dataclass, field
 from typing import List, Union
 
 
 # A python list interface to ROOT's std::vector
-class StdVectorList(collections.MutableSequence):
+class StdVectorList(MutableSequence):
     def __init__(self, vec_type, value=[]):
         self.vector = ROOT.vector(vec_type)(value)
 
@@ -119,7 +124,7 @@ class GRANDDataTree:
             if field == "_tree" or field == "_file" or field == "_tree_name": continue
             # print(field, self.__dataclass_fields__[field])
             u = getattr(self._tree, field[1:])
-            print(self.__dataclass_fields__[field].name, u, type(u))
+            # print(self.__dataclass_fields__[field].name, u, type(u))
             setattr(self, field[1:], u)
 
     def GetEntry(self, ev_no):
