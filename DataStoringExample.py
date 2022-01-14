@@ -238,8 +238,8 @@ for ev in range(0,event_count,2):
 tefield.BuildIndex("run_id", "evt_id")
 
 # Add friends
-tefield.AddFriend(tadccounts.tree)
 tefield.AddFriend(tvoltage.tree)
+tefield.AddFriend(tadccounts.tree)
 
 # Write the tree to the storage
 tefield.Write()
